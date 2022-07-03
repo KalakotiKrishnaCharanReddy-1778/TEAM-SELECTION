@@ -1,0 +1,87 @@
+import pandas as pd
+import math
+#student friendly
+df2 = pd.read_csv('students.csv')
+df1 = pd.read_csv('teams.csv')
+groups = len(df1)
+group_strength = 5
+cgpas = []
+s = {}
+x=1
+names = []
+grouping = {}
+leading = {}
+for i in range(len(df2)):
+    if (df2['names'][i] in list(df1['teams'])):
+        leading[df2['names'][i]] = df2['cgpa'][i]
+for i in range(len(df2)):
+    for j in list(df1['teams']):
+        if (j == df2['names'][i]):
+            l = []
+            l.append(df2['cgpa'][i])
+            s[j] = l
+for i in s:
+    grouping[i] = [i]
+topper = math.floor(group_strength / 3)
+middle = math.ceil(group_strength / 3)
+lower = math.floor(group_strength / 3)
+dictt = {}
+for i in range(len(df2)):
+    dictt[df2['names'][i]] = df2['cgpa'][i]
+if (topper + middle + lower == group_strength):
+    pass
+else:
+    lower += group_strength - topper - middle - lower
+for i in range(int(input('how many students to be enrolled now :'))):
+    x=0
+    a = input('\nenter your name:')
+    gf=open('enrolled.txt')
+    rrr=gf.read().split('\n')
+    if(a not in rrr):
+      if (a in list(df2['names'])):
+          print('\n\nMENU ')
+          print('Availabe groups :')
+          for l, i in s.items():
+              hcount = 0
+              mcount = 0
+              lcount = 0
+              for j in i:
+                  if (j >= 9):
+                      hcount += 1
+                  elif (j >= 6 and j < 9):
+                      mcount += 1
+                  else:
+                      lcount += 1
+                  ff=open(l+'.txt')
+                  rr=ff.readlines()
+              if (((hcount < topper and dictt[a] >= 9) or
+                 (mcount < middle and (dictt[a] >= 6 and dictt[a] < 9)) or
+                 (lcount < lower and dictt[a] < 6))
+                    and (len(rr) < group_strength)):
+                  print('{}({}/{})'.format(l, len(rr), group_strength))
+                  x+=1  
+              elif(dictt[a]<6):
+                  print('{}({}/{})'.format(l, len(rr), group_strength))
+                  x+=1
+          if(x==0):
+            print('\nYou can not join in the group contact your teacher , your name is given to mam.')  
+          else:
+            lassi = input('enter the group leader name to join in that group :')
+            ko=lassi+'.txt'
+            f=open(ko,'a')
+            f.write('\n'+a)
+            print("\nYou have enrolled")
+            grouping[lassi].append(a)
+            s[lassi].append(dictt[a])
+            f.close()
+            gf.close()
+            fg=open('enrolled.txt','a')
+            fg.write('\n'+a+'\n')
+            fg.close()
+      else:
+        print('your name is not in the list !! contact your teacher .')
+    else:
+      print('\nyou are already enrolled !!!')
+          
+              
+              
